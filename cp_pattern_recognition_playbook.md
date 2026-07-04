@@ -33,6 +33,80 @@ Run through these in order, every time, before writing code.
 | 12 | **Contiguous subarray/substring condition?** | Yes | Prefix sum / two pointers / sliding window |
 | 13 | **Asking for extremes over a moving window?** | Yes | Monotonic deque |
 
+### Worked Examples — Checklist
+
+**1a. N ≤ 20 → Bitmask/meet-in-the-middle**
+*Problem:* N ≤ 20 tasks, each with a value, some pairs conflict — pick a max-value conflict-free subset.
+*Approach:* `dp[mask]` = best value achievable using exactly the subset `mask`. Transition by trying to add each unset bit if it doesn't conflict with anything already in `mask`. 2²⁰ states is ~1M, fine at this N.
+
+**1b. N ≤ 500–1000 → O(N²)**
+*Problem:* Longest Common Subsequence of two strings, each length ≤ 1000.
+*Approach:* `dp[i][j]` = LCS length using first `i` chars of A and first `j` chars of B. `dp[i][j] = dp[i-1][j-1]+1` if `A[i]==B[j]`, else `max(dp[i-1][j], dp[i][j-1])`. That's 10⁶ states — comfortably O(N²).
+
+**1c. N ≤ 10⁵–10⁶ → O(N log N)/O(N)**
+*Problem:* Given N ≤ 10⁵ jobs with deadlines and profits, maximize profit scheduling one job per day.
+*Approach:* Sort jobs by profit descending (O(N log N)), then greedily place each job in the latest free slot ≤ its deadline using a DSU that jumps to the next free slot — the sort dominates the complexity.
+
+**1d. N ≤ 10⁹+ → O(log N)/matrix power**
+*Problem:* Compute the N-th Fibonacci number mod 1e9+7, N up to 10¹⁸.
+*Approach:* Fibonacci recurrence is linear, so represent the transition as a 2×2 matrix and use fast matrix exponentiation — O(log N) matrix multiplications instead of O(N) additions.
+
+**2a. Count → DP/combinatorics**
+*Problem:* Count the number of ways to climb N stairs, taking 1 or 2 steps at a time.
+*Approach:* `dp[i] = dp[i-1] + dp[i-2]` — this is literally Fibonacci in disguise. Counting problems almost always decompose into "ways to reach state i = sum of ways to reach states that can transition into i."
+
+**2b. Optimize → Greedy/DP**
+*Problem:* Minimum number of coins to make amount V, given arbitrary coin denominations.
+*Approach:* Greedy (always take the largest coin) fails for non-canonical coin systems (e.g. {1,3,4} to make 6 — greedy gives 4+1+1=3 coins, optimal is 3+3=2). Use DP instead: `dp[v] = min(dp[v-c]+1)` over all coins `c`.
+
+**3. Graph hiding in wording**
+*Problem:* N people, some pairs are friends — count the number of friend groups.
+*Approach:* Model people as nodes, friendships as edges. Either run DFS/BFS from every unvisited node and count components, or process the friend pairs with DSU and count distinct roots at the end.
+
+**4a. Order matters → Sequence DP**
+*Problem:* Longest strictly increasing subsequence (LIS) of an array.
+*Approach:* `dp[i]` = length of LIS ending at index `i`, computed as `1 + max(dp[j])` for all `j<i` with `A[j]<A[i]` (O(N²)), or maintain a "tails" array with binary search for O(N log N).
+
+**4b. Order doesn't matter → Combinatorics**
+*Problem:* Count the number of ways to choose K items from N distinct items.
+*Approach:* Direct formula `C(N,K) = N!/(K!(N-K)!)`, computed with precomputed factorials and modular inverses if a modulus is involved — no need to enumerate actual orderings.
+
+**5. Many queries on the same data**
+*Problem:* Array of 10⁵ elements, Q=10⁵ queries asking for the sum of range [l, r], no updates.
+*Approach:* Build a prefix-sum array once in O(N); each query then answers in O(1) as `prefix[r]-prefix[l-1]`. If updates were also required, upgrade to a Fenwick tree for O(log N) per operation.
+
+**6. Monotonic yes/no property**
+*Problem:* Distribute N packages across K trucks; minimize the maximum load any single truck carries.
+*Approach:* Binary search on the answer X ("can every truck carry ≤ X?"). The feasibility check is monotonic — if X works, anything larger also works — so binary search the smallest feasible X, checking each candidate with a linear greedy simulation.
+
+**7. State evolves over time → DP**
+*Problem:* Minimum cost to climb a staircase where each step has an associated cost, and you can move 1 or 2 steps at a time.
+*Approach:* `dp[i] = cost[i] + min(dp[i-1], dp[i-2])` — the state (current step) evolves, and the optimal decision at each step only depends on the immediately preceding states.
+
+**8. Digit DP**
+*Problem:* Count numbers in [1, N] whose digit sum is divisible by 3.
+*Approach:* DP over digit positions with state `(position, tight, digit_sum_mod_3)`, where `tight` tracks whether the prefix built so far is still equal to N's prefix (constraining which digits can be placed next).
+
+**9. Tree**
+*Problem:* Find the diameter (longest path between any two nodes) of a tree.
+*Approach:* Run DFS/BFS from any node to find the farthest node `u`, then DFS/BFS from `u` to find the farthest node `v` — the distance `u` to `v` is the diameter. (Alternative: single DFS computing, per node, the two longest downward paths through it.)
+
+**10. Connected/merge queries**
+*Problem:* Process a stream of edges being added one at a time; after each edge, answer whether two given nodes are connected.
+*Approach:* DSU (Union-Find) with union by rank/size and path compression — near-O(1) amortized per union or find, which a fresh BFS/DFS per query couldn't match.
+
+**11. K-th something / at most K**
+*Problem:* Find the K-th smallest element in an unsorted array.
+*Approach:* Quickselect (partition like quicksort, recurse only into the side containing the K-th index) for O(N) average time, or a min-heap of size K for O(N log K).
+
+**12. Contiguous subarray/substring condition**
+*Problem:* Length of the longest substring without repeating characters.
+*Approach:* Sliding window with a hash map of last-seen index per character. Expand the right pointer; when a repeat is found, jump the left pointer just past its previous occurrence.
+
+**13. Extremes over a moving window**
+*Problem:* Given an array and window size K, output the maximum of every window of size K.
+*Approach:* Monotonic deque storing indices with strictly decreasing values. Pop from the back while the new element is larger (they can never be the answer again), pop from the front when it falls outside the window.
+
 ---
 
 ## 2. Master Trigger Table (by category)
@@ -50,6 +124,44 @@ Run through these in order, every time, before writing code.
 | Need to search a sorted or "sorted-like" (unimodal) space | Halve the space | Binary Search |
 | Function first decreases then increases (or vice versa) | Search the peak | Ternary Search |
 | Subset-sum-like with N ≤ ~40 | Split in half | Meet in the Middle |
+
+### Worked Examples — Arrays & Sequences
+
+**Prefix Sum**
+*Problem:* Answer Q queries of "sum of elements from index l to r" on a static array.
+*Approach:* Build `prefix[i] = A[0]+...+A[i-1]` once, O(N). Each query answers in O(1) via `prefix[r+1]-prefix[l]`.
+
+**Difference Array**
+*Problem:* Apply M range updates ("add v to every element in [l,r]"), then output the final array.
+*Approach:* Instead of updating each range directly (O(N) per update), do `diff[l]+=v; diff[r+1]-=v` (O(1) per update). Take the prefix sum of `diff` once at the end to recover the final array in O(N).
+
+**Two Pointers / Sliding Window**
+*Problem:* Find the length of the smallest contiguous subarray with sum ≥ S.
+*Approach:* Expand the right pointer, adding to a running sum. Once the sum ≥ S, shrink from the left as much as possible while the condition still holds, recording the minimum window length seen. Each pointer moves forward only, so it's O(N) total, not O(N²).
+
+**Monotonic Stack**
+*Problem:* Largest rectangle area in a histogram of bar heights.
+*Approach:* Maintain a stack of indices with increasing bar heights. When a shorter bar appears, pop taller bars off the stack — each pop computes a candidate rectangle using the popped height and a width stretching back to the new stack top. Every bar is pushed and popped once → O(N).
+
+**Monotonic Deque**
+*Problem:* Maximum of every sliding window of size K in an array.
+*Approach:* Same core idea as the checklist example above — keep a deque of indices with strictly decreasing values; the front is always the current window's max. O(N) overall since each index enters/leaves the deque once.
+
+**Coordinate Compression**
+*Problem:* Values up to 10⁹, but you need to index them into a Fenwick tree (which needs small, dense indices).
+*Approach:* Collect all distinct values, sort them, and map each original value to its rank (1..N) in that sorted order. Use ranks wherever the original value would've been used as an index.
+
+**Binary Search**
+*Problem:* Find the position of a target value in a sorted array of 10⁵ elements.
+*Approach:* Classic O(log N): compare target to the middle element, discard the half that can't contain it, repeat.
+
+**Ternary Search**
+*Problem:* A cost function f(x) strictly decreases then strictly increases (convex) — find the x that minimizes it.
+*Approach:* Pick two interior points m1 < m2 in the current range; compare f(m1) and f(m2). Whichever is larger, its side of the range can be discarded (the minimum can't be there), shrinking the search space by ~1/3 each iteration.
+
+**Meet in the Middle**
+*Problem:* N ≤ 40 items with weights — does any subset sum to exactly target T?
+*Approach:* Split the items into two halves of ~20 each. Enumerate all 2²⁰ subset sums of each half. Sort one half's sums, then for each sum in the other half, binary search for the complementary value (T − sum). Turns an infeasible 2⁴⁰ brute force into two feasible 2²⁰ passes.
 
 ### Graphs
 
