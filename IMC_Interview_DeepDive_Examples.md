@@ -295,3 +295,72 @@ Your momentum strategy has a bug and starts sending orders in a runaway loop. A 
 3. "What's wrong with this two-lock code?" → spot the circular wait, fix with lock ordering.
 4. "Why UDP for market data but TCP for orders?" → reliability requirement differs; a missed tick self-heals, a missed order does not.
 5. "How would you prevent a runaway algo from blowing up the firm?" → pre-trade checks + kill switch, layered.
+
+
+# Project Interview Talking Points
+
+---
+
+## 1. FTIR Saliva Diagnostics (Research Internship)
+
+**30-sec pitch**: Built a complex-valued OLS model for non-invasive diabetes detection from FTIR saliva spectra. Used a Hilbert transform to convert real spectra into complex signals, capturing phase information real-valued baselines throw away. On 1,040 samples, hit 91.8% accuracy / 95.4% recall, beating KNN/SVC/real-OLS. Fingerprint region gave the best signal (AUC 0.971). Stress-tested under 4 noise types and stayed >80% accurate.
+
+**Likely follow-ups → answer angle**
+- *Why complex OLS over real-valued models?* → Phase carries information amplitude alone doesn't — two spectra can have identical amplitude but different phase due to molecular absorption shifts. Hilbert transform reconstructs that phase from the real signal.
+- *Why is the fingerprint region best?* → 500–1500 cm⁻¹ is where most biomolecular functional groups (glucose-related C-O, C-H bonds) show characteristic absorption — it's the most information-dense region for this task.
+- *What does AUC 0.971 actually mean?* → 97.1% chance the model ranks a random diabetic sample's score above a random non-diabetic one's.
+- *How did you validate robustness, and why does it matter?* → Injected Gaussian noise, Mie scattering, saturation, and ghost-peak artifacts synthetically — these are real failure modes in FTIR hardware, so a model that only works on clean lab spectra isn't clinically useful.
+- *What's Complex SHAP doing here?* → Standard SHAP explains real-valued feature contributions; Complex SHAP extends attribution to complex features so you can say *which wavenumber region and phase component* drove a prediction — needed for a diagnostic tool.
+- *What was your actual contribution vs. the professor's guidance?* → Be ready to state this precisely and honestly — e.g., "I designed and implemented the complex-OLS pipeline and noise-robustness experiments; the research direction was set jointly with my advisor." Don't overclaim, don't underclaim.
+
+---
+
+## 2. ARC-AGI Visual Reasoning (Tiny Recursive Model)
+
+**30-sec pitch**: Built a ~367K-parameter recursive Transformer for ARC-AGI — orders of magnitude smaller than typical LLM-based approaches, which run in the billions. Used weight sharing across 3 outer/6 inner reasoning cycles (same weights applied repeatedly, like iterative refinement), 3D RoPE to encode row/column/pair spatial structure, and deep supervision (loss applied at every cycle, not just the end) to keep gradients flowing through the full reasoning trajectory. Solved 1/400 held-out tasks with 8-fold augmentation.
+
+**Likely follow-ups → answer angle**
+- *1/400 is very low — why present this?* → ARC-AGI is deliberately adversarial to pattern-matching; most sub-million-parameter models score near 0. The point of this project was testing whether recursive, parameter-efficient reasoning could get *any* traction where scale-based approaches dominate — architecture and efficiency were the objective, not leaderboard rank. Say this plainly if asked, don't get defensive.
+- *Why weight sharing instead of stacking more layers?* → Forces the model to learn a genuinely iterative reasoning operator rather than memorizing a fixed-depth transformation — closer to how a human re-examines a grid.
+- *What does 3D RoPE buy you over standard 2D positional encoding?* → ARC grids have row, column, *and* cross-example pair structure (input/output pairs); a third rotary axis lets the model distinguish "same position, different example" from "different position."
+- *What's deep supervision doing mechanically?* → Cross-entropy loss applied after every recursive cycle, not just the final one, so early cycles get direct gradient signal instead of relying on it propagating back through all 6 steps.
+- *What would you do differently / to improve accuracy?* → Have 1–2 honest answers ready — e.g., curriculum ordering of task difficulty, more augmentation variety, or scaling inner-cycle count with early stopping per task.
+
+---
+
+## 3. Credit Card Fraud Detection
+
+**30-sec pitch**: Processed 285K transactions at 0.17% fraud rate — a severe imbalance problem. Engineered 38 features including graph-based degree centrality (via NetworkX) and velocity features (rolling stats over 10/50/100-event windows) to capture behavioral patterns fraud detection actually relies on. Trained XGBoost/LightGBM with SMOTE + StratifiedKFold, tuned thresholds for F2 (recall-weighted) since missing fraud is costlier than a false alarm. Got 0.29 PR-AUC / 0.96 ROC-AUC — a 180x improvement over random baseline.
+
+**Likely follow-ups → answer angle**
+- *ROC-AUC is 0.96 but PR-AUC is only 0.29 — is that a problem?* → Expected, not a red flag: with 0.17% positive rate, ROC-AUC is inflated because true negatives are trivially easy to get right. PR-AUC is the honest metric here since it only looks at precision/recall on the rare positive class — 0.29 vs. a random baseline near 0.0017 is actually a large improvement.
+- *Why F2 instead of F1 or accuracy?* → In fraud, a missed fraud (false negative) is far costlier than a false alarm (false positive) — F2 weights recall 2x over precision, matching that business cost asymmetry.
+- *What's "leak-free" imputation mean, and why does it matter?* → Imputing missing values using only information available *before* the transaction's timestamp — using future data (even from the same feature's global mean) would leak information the model wouldn't have at real inference time, inflating offline metrics falsely.
+- *Why velocity/graph features specifically?* → Fraud rings show up as behavioral anomalies over time (sudden burst of transactions) and as connectivity patterns (shared devices/merchants) — raw transaction-level features miss both.
+- *Why SMOTE and not just class weighting?* → Be ready to discuss the trade-off honestly — SMOTE generates synthetic minority examples which can help gradient boosting see more decision boundary detail, but risks synthetic artifacts; class weighting is simpler and sometimes just as effective. Good if you can say why you chose one over the other rather than just "it's standard."
+
+---
+
+## 4. ESP32 HC-SR04 TinyML Anomaly Detector
+
+**30-sec pitch**: Trained a small Keras autoencoder (4-8-2-8-4) on ultrasonic sensor data, then hand-wrote the forward pass in pure C++ instead of using TFLite Micro — eliminating runtime/interpreter overhead entirely. Result: 19 microsecond inference, 512 bytes of flash, zero heap allocation. Engineered temporal features (distance, jitter, variance) from an 8-sample circular buffer, and flagged mechanical anomalies in real time using MSE reconstruction error against a >2 std threshold.
+
+**Likely follow-ups → answer angle**
+- *Why an autoencoder specifically, not a classifier?* → No labeled anomaly data exists in a real deployment — autoencoder learns to reconstruct *normal* patterns only; anomalies produce high reconstruction error simply because the model was never trained to compress them well. Fully unsupervised.
+- *Why write raw C++ instead of using TFLite Micro?* → TFLite's interpreter carries overhead (op dispatch, tensor allocation) that's wasteful for a network this small; exporting weights as static C arrays and hand-writing the matrix multiplies means zero heap use and a fixed, predictable inference time — critical on a microcontroller with tight flash/RAM budgets.
+- *What issues did you actually hit building this?* → Good honest details to have ready: fixing a blocking sensor read inside an ISR (interrupt service routine) — originally the ISR was doing work that could stall other interrupts, moved to a non-blocking flag-and-defer pattern; and a dying ReLU problem in the small network, fixed by switching to LeakyReLU so units don't permanently zero out during training.
+- *How did you pick the >2 std threshold?* → Set from the validation set's reconstruction error distribution on known-normal data — 2 std balances false positive rate against catching genuine jitter.
+- *96 MAC ops, 19 microseconds — how do you know that's fast enough?* → Frame it against the sensor's own sampling rate — if HC-SR04 gives readings every few ms, a 19µs inference is a tiny fraction of the budget, leaving headroom for other real-time tasks on the same MCU.
+
+---
+
+## 5. Delhivery ETA Optimization
+
+**30-sec pitch**: Modeled 141K trip segments as a directed weighted graph (1,588 nodes) to find bottleneck hubs via network centrality. Engineered 69 features and built a two-tier stacking ensemble (XGBoost + LightGBM + RandomForest as base learners, meta-learner on top) to push ETA accuracy to 74.2% and cut MAE to 27.9 minutes. Flagged the Gurgaon hub as high-risk, translating to an estimated ₹149 Lakhs of revenue-at-risk mitigated and a 5.5pp reduction in SLA breaches.
+
+**Likely follow-ups → answer angle**
+- *What is "network centrality" doing here, concretely?* → Identifies nodes (hubs) that sit on a disproportionate number of shortest paths between other nodes — a bottleneck hub isn't just busy, it's structurally hard to route around, so delays there cascade further than delays at a peripheral node.
+- *Why two-tier stacking instead of a single model?* → Different base learners (XGB, LGB, RF) capture different error patterns; a meta-learner trained on their outputs can correct for each one's blind spots — typically buys a few points of accuracy over any single model, at the cost of more complexity/inference time.
+- *How did you translate MAE into a rupee figure?* → Be ready to explain the actual chain of reasoning you used — e.g., linking predicted SLA breaches to contractual penalty/refund costs per shipment, then aggregating over affected volume at the flagged hub. If this was an estimate/assumption-based calculation (common in case-study style projects), say so plainly rather than presenting it as measured fact.
+- *Why did the Gurgaon hub specifically stand out?* → Have the actual reason ready — e.g., highest betweenness centrality combined with high volume throughput, meaning both structurally critical *and* heavily loaded.
+- *74.2% ETA accuracy — accuracy relative to what threshold?* → Clarify whether this means "within X minutes of actual" or a classification-style bucket accuracy — interviewers will push on this if the number sounds vague.
