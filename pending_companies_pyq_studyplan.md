@@ -1,6 +1,6 @@
-# PYQ Compilation & Study Plan — 13 Pending Companies (CDC)
+# PYQ Compilation & Study Plan — 15 Pending Companies (CDC)
 
-Sources: IIT Kharagpur SWG "FORESIGHT" series (Medium), GeeksforGeeks interview-experience posts, Glassdoor, Wall Street Oasis, TheJobOverflow, and firsthand blog write-ups. Every company below has been cross-checked against IIT Kharagpur/campus-specific experiences where available; where only generic (non-KGP) data exists, that's flagged.
+Sources: IIT Kharagpur SWG "FORESIGHT" series (Medium), GeeksforGeeks interview-experience posts, Glassdoor, Wall Street Oasis, TheJobOverflow, LeetCode Discuss, and firsthand blog write-ups. Every company below has been cross-checked against IIT Kharagpur/campus-specific experiences where available; where only generic (non-KGP) data exists, that's flagged.
 
 ---
 
@@ -9,9 +9,11 @@ Sources: IIT Kharagpur SWG "FORESIGHT" series (Medium), GeeksforGeeks interview-
 | Track | Companies | Core prep overlap |
 |---|---|---|
 | **A. Quant/Prop/Trading-tech** | AlphaGrip (AlphaGrep) Securities, Fin Mechanics (FinMechanics), Neo Wealth and Asset Management, Wells Fargo (Quant Analyst track) | Probability puzzles, mental math, C++/Python DSA, options/derivatives basics |
-| **B. Product/SDE (pure coding)** | Atlassian, Salesforce, UiPath, KLA, GreenSearch Technologies (= Glean) | DSA (medium-hard), OOPs, CS fundamentals (OS/DBMS/CN), LLD for senior-style rounds |
+| **B. Product/SDE (pure coding)** | Atlassian, Salesforce, UiPath, KLA, GreenSearch Technologies (= Glean), **Databricks**, **NatWest Group** | DSA (medium-hard), OOPs, CS fundamentals (OS/DBMS/CN), LLD for senior-style rounds |
 | **C. Fintech/Full-stack + resume-weighted** | Corridor Technologies (= Corridor Platforms), Capital One Services | Full-stack basics + light DSA, resume-story fluency > pure CP |
 | **D. Analyst/Consulting/Case-based** | Piramal Finance, Hindustan Unilever Limited (HUL) | Case studies, GD, SQL/Python basics, HR-fit narrative |
+
+Note on the two new additions: **Databricks** is the single highest-bar pure-DSA company on this whole list (medium→hard LeetCode, back-to-back rounds, deep CS-fundamentals expectations) — treat it as your Track B stretch target. **NatWest** is comparatively the most "checklist-able" — a fixed-format MCQ+coding OA followed by one combined tech/HR round — so it rewards broad-but-not-deep CS fundamentals revision more than grind depth.
 
 This maps well onto your existing prep — Track A leans on the same probability/expected-value muscle you're building for Trexquant alphas, and Track B is a direct extension of your LeetCode DP work.
 
@@ -264,7 +266,56 @@ No written aptitude test for the classic FMCG track — HUL relies on GD + case 
 
 ---
 
-## 14. Master Study Plan
+## 14. NatWest Group
+
+**Role:** Software Engineer (Gurgaon/Chennai/Bangalore/Pune, Global Capability Centre banking-tech).
+
+**Selection process (highly consistent across campuses — this is one of the most "fixed format" companies on your list):**
+1. Eligibility screen: 10th ≥70%, 12th ≥70%, CGPA ≥6 with no standing arrears; shortlist further narrowed by CGPA + resume.
+2. **Online Test** — platform varies by year (AMCAT seen in one cycle, standalone OA in another) but the structure is consistent: **4 sections** — English/Verbal, Technical MCQs (OOPs, DSA, DBMS, C/output-prediction), SQL, and 2 Coding questions. In one full breakdown: 50 total questions — 48 MCQs (4 sections × 12) + 2 programming questions.
+3. **Single combined Technical + HR interview** (~25–35 min) — no separate rounds. Covers resume/projects/internships in depth, a DSA-fundamentals discussion, then folds directly into HR questions ("what do you know about NatWest," "why should we hire you," "what values can you provide to NatWest").
+
+**Real PYQs found:**
+- Coding: *find the number of perfect squares in an array.*
+- Coding: *find the intersection area of two circles* given two centers (x1,y1),(x2,y2) and radii r1,r2 — return floor of the overlap area.
+- Coding (other cycle): *sum of elements of an array* (easy warm-up-style question — difficulty varies a lot by set).
+- MCQs: DBMS/SQL-heavy, OOPs concepts, C output-prediction, English vocabulary/passage-reading.
+- Interview: linked-list complexities, "which basic data structure underlies a Tree," real-world applications of linked list/stack/queue/tree/graph, explain Logistic Regression/Naïve Bayes/Decision Tree briefly (if ML is on your resume), why CNNs suit image classification, **write a SQL query for the 3rd-highest salary**, OOPs (polymorphism, inheritance), **Diamond Problem in C++ & virtual functions** (recurring favorite).
+
+**Prep priority:** This is a breadth-over-depth company — solid MCQ-level command of DBMS/SQL/OOPs/CN/OS (your CN/OS Microsoft-prep doc and STL reference directly cover this), the classic "Nth highest salary" SQL pattern, and C++ Diamond Problem/virtual-function mechanics specifically (it's come up more than once). Coding questions themselves are easy-medium — don't over-invest there relative to the MCQ sections, since candidates who nailed both coding questions but weak on MCQs were reported as not advancing.
+
+**Sources:** [Vishwajeet Anand – Selected](https://medium.com/@krishnaram7755/natwest-group-interview-experience-selected-cf84170fae96), [GfG – On-Campus SDE](https://www.geeksforgeeks.org/interview-experiences/natwest-interview-experience-for-software-engineer-on-campus/), [LeetCode Discuss – Summer Trainee OA](https://leetcode.com/discuss/post/7229292/), [Glassdoor](https://www.glassdoor.co.in/Interview/NatWest-Group-Interview-Questions-E10222.htm)
+
+---
+
+## 15. Databricks
+
+**Role:** Software Engineer (Intern/FTE) — this is the most CP/DSA-intensive company on your full list; treat it as your ceiling target.
+
+**Selection process — Internship track:**
+1. Online coding test on **CodeSignal** — **4 DSA questions** (first 2 easy, last 2 medium), 90 min. Shortlisting appears to combine "solved all 4" + submission time + department/CGPA.
+2. 3 interview rounds same day: **2 coding + 1 HR**.
+ - Round 1: design a small class with functions to store/retrieve elements per queries — brute force (set+map, O(n log n)) is a valid start, but they push you toward an optimized **linear-time** solution, then ask you to implement it and spot bugs *without running the code*.
+ - Round 2: DFS-on-tree question, implement + run against a test case, followed by a harder follow-up on the same concept (may not require full implementation if time runs out).
+ - Round 3: deep resume/project dive + role-specific follow-ups (e.g., TCP/UDP questions if a networking project is listed) + standard HR ("why Databricks," teamwork/collaboration).
+
+**Selection process — FTE track:**
+1. Direct CV shortlist (reported cutoff one year: CS department, 9+ CGPA — a strong CV/CGPA bar).
+2. **3 rounds**: 2 technical (medium→hard LeetCode-level DSA, standard patterns, no puzzles) + 1 HR/leadership round (~30–45 min, conversational but requires sharp, clear communication — interviewers can be very senior, 15+ years experience).
+3. Rounds run **back-to-back with only 2–3 minutes between them** — the whole loop can take ~2.5 hours in one sitting. No guarantee of breaks. Core CS subjects (OS/DBMS/CN) were *not* asked in one FTE cycle but "can vary by year" per the candidate — don't skip them.
+
+**Prep priority (this is your best-covered company given existing prep, but also your hardest bar):**
+- DSA: medium→hard LeetCode, with real signal from a selected candidate that **Codeforces 1800+ problems**, **CSES** (DP/graphs/range-queries/tree-algorithms sections), and **GOC intern-test archives** (last 3–4 years) were the most useful — beyond what LeetCode alone gives you.
+- Be ready to **optimize live and reason about correctness without running code** — this recurs in both the intern and FTE loops.
+- CS fundamentals: go deep, not just topic-name-level — one candidate specifically regretted not knowing **exact normal-form conditions** (not just names) for a sibling company's interview in the same season; Databricks itself has asked networking (TCP/UDP) when it's on your resume. This is a direct match for your existing CN/OS prep doc — just push it one level deeper (exact definitions, not just concepts).
+- OOPs/C++: comfort with STL internals (what a vector does under the hood, etc.) was explicitly called out as more useful than passive reading.
+- Practical logistics: interviews are same-day and back-to-back — check your laptop/charger the night before (one candidate nearly missed their slot after forgetting their laptop).
+
+**Sources:** [FORESIGHT 2025 – Abir Roy (Internship, full round-by-round detail)](https://medium.com/@swgiitkgp/foresight-2025-internship-at-databricks-abir-roy-dd7efb40cd97), [FORESIGHT 2025 – Mayukha Marla (FTE, full prep breakdown)](https://medium.com/@swgiitkgp/foresight-2025-placement-at-databricks-mayukha-marla-6dc1238f04fd), [Soukhin Nayek – Internship prep journey](https://medium.com/@soukhinkgp2/databricks-internship-code-effort-and-offer-6cad5c4c6736)
+
+---
+
+## 16. Master Study Plan
 
 Since test dates aren't fixed for all 13 yet, this is a **3-week rolling plan** organized by track, so you can compress or expand based on when each company's slot actually lands. Run the "Night-before checklist" for whichever company is up next, regardless of where you are in the main plan.
 
@@ -285,19 +336,22 @@ Since test dates aren't fixed for all 13 yet, this is a **3-week rolling plan** 
 | 11 | Search/retrieval fundamentals: inverted index, basic ranking intuition (TF-IDF/BM25), permission-aware access control concept | Glean (GreenSearch Technologies) — different from standard LeetCode prep, don't skip |
 | 12 | 2-hour timed "build something small and working" exercise (e.g., a mini search-and-rank CLI tool) | Glean's actual practical-coding-assignment format |
 | 13 | Project-narrative rehearsal: SvelTech + AeroShield IQ — structured 90-second pitch each (problem → your contribution → a bug/tradeoff → impact) | Corridor Platforms weighs CV/project depth over CP |
-| 14 | SQL practice: GROUP BY, window functions, joins; Pandas mean/median/groupby drills | Piramal Finance BIU track |
+| 14 | SQL practice: GROUP BY, window functions, joins, Nth-highest-salary pattern; Pandas mean/median/groupby drills | Piramal Finance BIU track + NatWest's classic "3rd highest salary" query |
+| 15 | CS-fundamentals depth pass: exact DBMS normal-form conditions (not just names), C++ Diamond Problem + virtual functions, TCP/UDP basics | Databricks (deep-knowledge expectation) + NatWest (Diamond Problem is a recurring favorite) |
+| 16 | Codeforces 1800+ / CSES sprint (DP, graphs, range queries, tree algos) — 2-3 problems, timed, no hints | Databricks-specific signal: this outperformed pure LeetCode prep for a selected candidate |
 
 ### Week 3 — Track D + integration + GenAI literacy
 | Day | Focus | Why |
 |---|---|---|
-| 15 | Case-interview framework practice: 3 FMCG/supply-chain cases + 1 profitability case, timed | HUL case rounds, Capital One case rounds |
-| 16 | Data interpretation speed drills (pie/bar charts, tables) under a strict per-question timer | Capital One, Wells Fargo, HUL |
-| 17 | GenAI conceptual literacy pass: transformers, RAG, hallucination, prompt engineering — at MCQ-depth, not research depth | Wells Fargo Technology Analyst OA (new-format) |
-| 18 | Full mixed mock OA: aptitude + 2 coding + 1 probability puzzle, single sitting, timed | Simulates the general CDC test format across most of these |
-| 19 | Resume rehearsal against all 4 tracks: know which project/story to lead with per company type | Everyone probes CV — get the mapping automatic |
-| 20–21 | Rest + light review + re-run your weakest 2 topics from the week | Avoid burnout going into test season |
+| 17 | Case-interview framework practice: 3 FMCG/supply-chain cases + 1 profitability case, timed | HUL case rounds, Capital One case rounds |
+| 18 | Data interpretation speed drills (pie/bar charts, tables) under a strict per-question timer | Capital One, Wells Fargo, HUL |
+| 19 | GenAI conceptual literacy pass: transformers, RAG, hallucination, prompt engineering — at MCQ-depth, not research depth | Wells Fargo Technology Analyst OA (new-format) |
+| 20 | Full mixed mock OA: aptitude + 2 coding + 1 probability puzzle, single sitting, timed | Simulates the general CDC test format across most of these |
+| 21 | Databricks-style back-to-back mock: 2 timed coding rounds + 1 HR/leadership round, no break between | Databricks loop is uniquely compressed (~2.5 hrs, 2-3 min gaps) — nothing else on this list needs this specific stamina rehearsal |
+| 22 | Resume rehearsal against all 4 tracks: know which project/story to lead with per company type | Everyone probes CV — get the mapping automatic |
+| 23–24 | Rest + light review + re-run your weakest 2 topics from the week | Avoid burnout going into test season |
 
-### Night-before checklist (use before *any* of these 13 tests)
+### Night-before checklist (use before *any* of these 15 tests)
 1. Reread this company's section above once.
 2. Solve 2 problems in that company's dominant pattern (see table below).
 3. Rehearse your 90-second project pitch tailored to the role (data/quant/SDE/consulting).
@@ -309,10 +363,12 @@ Since test dates aren't fixed for all 13 yet, this is a **3-week rolling plan** 
 | Atlassian | 1 LeetCode medium/hard + 1 behavioral story |
 | Capital One | 1 case framework + data-interpretation set |
 | Corridor Technologies | Project pitch rehearsal (not DSA) |
+| Databricks | 1 Codeforces 1800+/CSES problem + rehearse "optimize live without running code" out loud; pack your laptop/charger tonight |
 | Fin Mechanics | 1 probability puzzle + Binomial Tree option pricing recap |
 | GreenSearch Technologies (Glean) | Inverted-index/ranking concept recap |
 | HUL | 1 timed case scenario |
 | KLA | Timed aptitude set (high volume, low time/question) |
+| NatWest Group | SQL Nth-highest-salary query + C++ Diamond Problem/virtual functions recap + skim DBMS/OOPs MCQ topics |
 | Neo Wealth | Probability + options/derivatives recap |
 | Piramal Finance | SQL query set + Pandas mean/median drill |
 | Salesforce | Heap + LCS + balanced-parenthesis problem |
@@ -321,4 +377,4 @@ Since test dates aren't fixed for all 13 yet, this is a **3-week rolling plan** 
 
 ---
 
-*Note: Neo Wealth's KGP-specific process wasn't publicly documented at the time of this search — verify with CDC notices/seniors closer to their visit date. All other companies have at least one direct IIT Kharagpur account cited above.*
+*Note: Neo Wealth's KGP-specific process wasn't publicly documented at the time of this search — verify with CDC notices/seniors closer to their visit date. NatWest's data above is cross-campus (not KGP-confirmed) but the format is reported as highly consistent year-to-year and campus-to-campus. All other companies have at least one direct IIT Kharagpur account cited above.*
